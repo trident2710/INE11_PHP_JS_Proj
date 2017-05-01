@@ -77,6 +77,14 @@ function process_add_item_to_inventory($item_id){
     backup_user_world_staff();
     backup_user_data();
 }
+
+/**
+ * process the world display data request
+ */
+function process_map_request(){
+    header("Content-type : application/json");
+    echo get_world_display_params();
+}
 /**
  * handle and process the request params to control
  * the content of the page
@@ -99,8 +107,10 @@ function handle_request(){
                 break;
             case 'take':
                 process_add_item_to_inventory($_GET['item']);
-                //echo print_r(get_world_staff_by_room_id(get_current_usr()['room_id']));
-                //return;
+                break;
+            case 'map':
+                process_map_request();
+                exit();
                 break;
             default:
                 echo file_get_contents("view/error.html");

@@ -217,5 +217,10 @@ function add_item_to_world_staff($room_id,$staff_id){
  * @return string contains display data JSON. @see world.json field "display_params"
  */
 function get_world_display_params(){
-
+    $display_data = array();
+    $world = get_world();
+    for($i=0;$i<count($world);$i++){
+        array_push($display_data,$world[$i]["display_params"]);
+    }
+    return json_encode($display_data);
 }

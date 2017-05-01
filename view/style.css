@@ -1,0 +1,41 @@
+.link{
+    text-align: center;
+}
+.link_title{
+    display: inline-block;
+}
+.link_ref{
+    margin-left: 10px;
+    float: right;
+}
+.map{
+    width: 50%;
+}
+.imp_data{
+    color: red;
+}
+.navigation{
+    width: 25%;
+}
+.inventory{
+    width: 25%;
+}
+.content{
+    height: 550px;
+}
+tr,th,td{
+    border: 1px solid black;
+}
+.main{
+    text-align: center;
+    width: 100%;
+
+}
+header, footer {
+    font-size: 20px;
+    padding: 1em;
+    color: white;
+    background-color: black;
+    clear: left;
+    text-align: center;
+}
