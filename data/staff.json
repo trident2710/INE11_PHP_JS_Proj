@@ -1,0 +1,18 @@
+[
+  {
+    "id":0,
+    "name":"spear"
+  },
+  {
+    "id":1,
+    "name":"sword"
+  },
+  {
+    "id":2,
+    "name":"shield"
+  },
+  {
+    "id":3,
+    "name":"hammer"
+  }
+]

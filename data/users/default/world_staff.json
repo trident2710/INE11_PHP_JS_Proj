@@ -1,0 +1,14 @@
+[
+  {
+    "room_id":0,
+    "staff":[1]
+  },
+  {
+    "room_id":1,
+    "staff":[2]
+  },
+  {
+    "room_id":2,
+    "staff":[0]
+  }
+]

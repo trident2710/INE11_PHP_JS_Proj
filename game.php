@@ -1,99 +1,116 @@
-<!DOCTYPE html>
 <?php
-    session_start();
-    process_command();
+include_once 'game_utils.php';
+handle_request();
 
 
-    $world = array(
-        array("name" => "chambre Jaune",
-            "outs" => array ("porte" => 1,
-                "fenêtre" => 2)),
-        array("name" => "chambre Verte",
-            "outs" => array ("porte" => 0,
-                "fenêtre" => 2)),
-        array("name" => "jardin",
-            "outs" => array ("fenêtre Jaune" => 0,
-                "fenêtre verte" => 1))
-    );
-    
 
-    function default_unlogged_command(){
-        echo "<form action=\"http://localhost:63342/INE11_PHP_JS_Proj/game.php\" method=\"GET\">
-              <input type=\"hidden\" name=\"command\" value=\"login\" /> 
-              <input type=\"text\" id = name title=\"Insert your name\" name=\"name\">
-              <label for=\"name\">Insert your name</label>
-              <input type=\"submit\"/> 
-            </form>";
-    }
 
-    function get_current_room_name(){
-        return $world[$_SESSION["room"]]["name"];
-    }
-
-    function default_logged_command(){
-        echo "<h1>"."Bonjour ".get_login()."</h1>".
-            "<h6>"."Currently you are in room ".get_current_room_name()."</h6>".
-            "<a href=\"http://localhost:63342/INE11_PHP_JS_Proj/game.php?command=logout\">Logout</a>";
-    }
-    function get_login(){
-        return $_SESSION["username"];
-    }
-    function is_logged_in(){
-        return !empty($_SESSION["username"]);
-    }
-
-    function login(){
-        if(!empty($_GET["name"])){
-            $_SESSION["username"] = $_GET["name"];
-            $_SESSION["room"] = 0;
-            return true;
-        }
+/**
+ * login the user with the selected name
+ * @param $user_name
+ * @return boolean if login succeeded
+ */
+function login($user_name){
+    if(empty($user_name)) {
         return false;
     }
-
-    function logout(){
-        unset($_SESSION["username"]);
-        unset($_SESSION["room"]);
+    $user_data = get_user_data($user_name);
+    if($user_data==null){
+       $user_data = add_new_user($user_name);
     }
+    load_data_to_session();
+    set_to_session('user_data', $user_data);
+    load_user_world_staff_to_session();
+    return true;
+}
 
-    function show_message($message){
-        echo $message;
+/**
+ * logout current user
+ */
+function logout(){
+    if(check_user_in_session()){
+        backup_user_world_staff();
+        backup_user_data();
+
+        unset_from_session('user_data');
+        unset_from_session('world_staff');
+        unset_from_session('world');
     }
+}
 
-    function process_command(){
-        if(!empty($_GET["command"])){
-            switch ($_GET["command"]){
-                case 'login':
-                    if(login()) show_message("Logged in successfully");
-                    break;
-                case 'logout':
-                    if(is_logged_in()){
-                        logout();
-                        show_message("Successfully logged out");
-                    } else show_message("User is not logged in");
-                    break;
-                case 'go':
-                    if(is_logged_in()){
-                        show_message("Not supported yet");
-                    } else show_message("User is not logged in");
-                    break;
-                case 'take':
-                    if(is_logged_in()){
-                        show_message("Not supported yet");
-                    } else show_message("User is not logged in");
-                    break;
-                case 'put':
-                    if(is_logged_in()){
-                        show_message("Not supported yet");
-                    } else show_message("User is not logged in");
-                    break;
-                default:
-                    show_message("Unknown command");
-            }
+/**
+ * process the 'go' command
+ * @param $room_id
+ */
+function process_go_command($room_id){
+    $usr = get_current_usr();
+    $usr['room_id']=$room_id;
+    set_to_session('user_data',$usr);
+    backup_user_data();
+}
+
+/**
+ * process remove command
+ * @param $item_id
+ */
+function process_remove_item_from_inventory($item_id){
+    $usr = get_current_usr();
+    //$usr['inventory_staff_ids'] = array_diff($usr['inventory_staff_ids'],array($item_id));
+    if (false !== $key = array_search($item_id, $usr['inventory_staff_ids'])) {
+        unset($usr['inventory_staff_ids'][$key]);
+    }
+    set_to_session('user_data',$usr);
+    add_item_to_world_staff($usr['room_id'],$item_id);
+    backup_user_world_staff();
+    backup_user_data();
+}
+
+/**
+ * process take command
+ * @param $item_id
+ */
+function process_add_item_to_inventory($item_id){
+    $usr = get_current_usr();
+    array_push($usr['inventory_staff_ids'],$item_id);
+    set_to_session('user_data',$usr);
+    remove_item_from_world_staff($usr['room_id'],$item_id);
+    backup_user_world_staff();
+    backup_user_data();
+}
+/**
+ * handle and process the request params to control
+ * the content of the page
+ */
+function handle_request(){
+    if(!empty($_GET["command"])){
+        switch ($_GET["command"]){
+            case 'login':
+                if(!login($_GET['name']))
+                    echo file_get_contents("view/error.html");
+                break;
+            case 'logout':
+                logout();
+                break;
+            case 'go':
+                process_go_command($_GET['room']);
+                break;
+            case 'remove':
+                process_remove_item_from_inventory($_GET['item']);
+                break;
+            case 'take':
+                process_add_item_to_inventory($_GET['item']);
+                //echo print_r(get_world_staff_by_room_id(get_current_usr()['room_id']));
+                //return;
+                break;
+            default:
+                echo file_get_contents("view/error.html");
         }
-
-        if(!is_logged_in()){
-            default_unlogged_command();
-        } else default_logged_command();
-
     }
+
+    if(!check_user_in_session()){
+        echo file_get_contents("view/login.html");
+    } else {
+        header("Location:view/main.php");
+        exit();
+    }
+}
