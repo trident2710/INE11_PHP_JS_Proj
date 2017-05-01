@@ -31,6 +31,9 @@ if(!check_user_in_session()){
                 <tr>
                     <td >
                         <div class="content">
+                            <canvas id="map" width="300" height="300">
+
+                            </canvas>
                         </div>
                     </td>
                     <td >

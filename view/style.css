@@ -39,3 +39,7 @@ header, footer {
     clear: left;
     text-align: center;
 }
+canvas{
+    background: grey;
+    border: 1px;
+}

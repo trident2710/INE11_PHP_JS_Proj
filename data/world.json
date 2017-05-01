@@ -1,7 +1,7 @@
 [
   {
     "id":0,
-    "name":"chambre Jaune",
+    "name":"1",
     "outs":[
       {
         "name":"porte",
@@ -13,13 +13,13 @@
       }
     ],
     "display_params":{
-      "color":"red",
-      "points":[[10,10],[10,20],[20,20],[20,10]]
+      "color":"yellow",
+      "points":[[0,0],[175,0],[175,100],[0,100]]
     }
   },
   {
     "id":1,
-    "name":"chambre Verte",
+    "name":"2",
     "outs":[
       {
         "name":"porte",
@@ -32,12 +32,12 @@
     ],
     "display_params":{
       "color":"green",
-      "points":[[10,20],[10,30],[20,30],[20,20]]
+      "points":[[176,0],[300,0],[300,100],[176,100]]
     }
   },
   {
     "id":2,
-    "name":"jardin",
+    "name":"3",
     "outs":[
       {
         "name":"fenetre Jaune",
@@ -46,11 +46,66 @@
       {
         "name":"fenetre Verte",
         "id":1
+      },
+      {
+        "name":"out to 4",
+        "id":3
       }
+
     ],
     "display_params":{
       "color":"blue",
-      "points":[[10,30],[10,40],[20,40],[20,30]]
+      "points":[[201,100],[300,100],[300,300],[200,300]]
+    }
+  },
+  {
+    "id":3,
+    "name":"4",
+    "outs":[
+      {
+        "name":"out to 5",
+        "id":4
+      },
+      {
+        "name":"out to 3",
+        "id":2
+      }
+    ],
+    "display_params":{
+      "color":"cyan",
+      "points":[[151,200],[200,200],[200,300],[150,300]]
+    }
+  },
+  {
+    "id":4,
+    "name":"5",
+    "outs":[
+      {
+        "name":"out to 6",
+        "id":5
+      },
+      {
+        "name":"out to 4",
+        "id":3
+      }
+    ],
+    "display_params":{
+      "color":"magenta",
+      "points":[[151,100],[200,100],[200,200],[151,200]]
+    }
+  },
+  {
+    "id":5,
+    "name":"6",
+    "outs":[
+      {
+        "name":"out to 5",
+        "id":4
+      }
+    ],
+    "display_params":{
+      "color":"red",
+      "points":[[0,100],[150,100],[150,300],[0,300]]
     }
   }
 ]

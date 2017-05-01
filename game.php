@@ -82,7 +82,8 @@ function process_add_item_to_inventory($item_id){
  * process the world display data request
  */
 function process_map_request(){
-    header("Content-type : application/json");
+    header("Content-type: application/json");
+    header("HTTP/1.1 200 OK");
     echo get_world_display_params();
 }
 /**
@@ -110,8 +111,7 @@ function handle_request(){
                 break;
             case 'map':
                 process_map_request();
-                exit();
-                break;
+                return;
             default:
                 echo file_get_contents("view/error.html");
         }
