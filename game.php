@@ -86,6 +86,15 @@ function process_map_request(){
     header("HTTP/1.1 200 OK");
     echo get_world_display_params();
 }
+
+/**
+ * process the where (the player on map) request
+ */
+function process_where_request(){
+    header("Content-type: application/json");
+    header("HTTP/1.1 200 OK");
+    echo get_user_coordinates();
+}
 /**
  * handle and process the request params to control
  * the content of the page
@@ -111,6 +120,9 @@ function handle_request(){
                 break;
             case 'map':
                 process_map_request();
+                return;
+            case 'where':
+                process_where_request();
                 return;
             default:
                 echo file_get_contents("view/error.html");

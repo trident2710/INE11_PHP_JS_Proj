@@ -1,12 +1,25 @@
 
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
+var map_request = new XMLHttpRequest();
+map_request.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-        fill_map(JSON.parse(xhttp.responseText));
+        fill_map(JSON.parse(map_request.responseText));
     }
 };
-xhttp.open("GET", "../game.php?command=map",true);
-xhttp.send();
+map_request.open("GET", "../game.php?command=map",true);
+map_request.send();
+
+
+var user_request = new XMLHttpRequest();
+user_request.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        display_user_position(JSON.parse(user_request.responseText));
+        alert(user_request.responseText);
+    }
+};
+user_request.open("GET", "../game.php?command=where",true);
+user_request.send();
+
+
 
 
 var fill_map = function (map_data) {
@@ -19,4 +32,16 @@ var fill_map = function (map_data) {
         ctx.fillStyle = color;
         ctx.fillRect(map_data[i]['points'][0][0],map_data[i]['points'][0][1],h,l);
     }
+};
+
+var display_user_position = function(user_data){
+    var map = document.getElementById('map');
+    var context = map.getContext("2d");
+    context.beginPath();
+    context.arc(user_data['x'], user_data['y'], 10, 0, 2 * Math.PI, false);
+    context.fillStyle = 'white';
+    context.fill();
+    context.lineWidth = 5;
+    context.strokeStyle = '#003300';
+    context.stroke();
 };

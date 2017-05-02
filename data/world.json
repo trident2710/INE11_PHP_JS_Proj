@@ -111,7 +111,8 @@
     "special_events":[
       {
         "value":"win",
-        "message":"some win message"
+        "message":"some win message",
+        "effect":{}
       }
     ],
     "outs":[
@@ -131,7 +132,8 @@
     "special_events":[
       {
         "value":"lose",
-        "message":"some lose message"
+        "message":"some lose message",
+        "effect":{}
       }
     ],
     "outs":[

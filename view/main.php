@@ -46,7 +46,12 @@ if(!check_user_in_session()){
                                     $id = $room['outs'][$i]['id'];
                                     $name = $room['outs'][$i]['name'];
                                     $room_name = get_room_by_id($id)['name'];
-                                    echo "<p><a href=\"/INE11_PHP_JS_Proj/game.php?command=go&room=".$id."\">".$room_name." par ".$name."</a></p>";
+                                    $conditions = get_conditions_for_room_id_and_out($room['id'],$i);
+                                    if($conditions!=null&&!check_conditions($conditions)){
+                                        echo "<p>".$room_name." par ".$name." (fermé)"."</p>";
+                                    } else{
+                                        echo "<p><a href=\"/INE11_PHP_JS_Proj/game.php?command=go&room=".$id."\">".$room_name." par ".$name."</a></p>";
+                                    }
                                 }
                             ?>
                             <table class="main">
@@ -87,6 +92,22 @@ if(!check_user_in_session()){
                                     }
                                 }
                             ?>
+                            <table class="main">
+                                <tr>
+                                    <th>Information specifique</th>
+                                    <p id='info'></p>
+                                </tr>
+                            </table>
+                            <div>
+                                <?php
+                                    $events = execute_special_events(get_current_usr()['room_id']);
+                                    if(!empty($events)){
+                                        for ($i=0;$i<count($events);$i++){
+                                            echo $events[$i]['message'];
+                                        }
+                                    }
+                                ?>
+                            </div>
                         </div>
                     </td>
                 </tr>

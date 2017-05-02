@@ -63,7 +63,9 @@ function get_user_data($user_name){
  * @return the variable contains the user data, @see users.json
  */
 function add_new_user($user_name){
-    $user_data = array("name"=>$user_name,"room_id"=>0,"inventory_staff_ids"=>[]);
+    //$user_data = array("name"=>$user_name,"room_id"=>0,"inventory_staff_ids"=>[]);
+    $user_data = json_decode(file_get_contents("data/users/default/user_data.json"),true);
+    $user_data['name'] = $user_name;
     mkdir("data/users/".$user_name);
     file_put_contents("data/users/".$user_name."/user_data.json",json_encode($user_data));
     create_user_staff_data($user_name);
@@ -223,4 +225,106 @@ function get_world_display_params(){
         array_push($display_data,$world[$i]["display_params"]);
     }
     return json_encode($display_data);
+}
+
+/**
+ * check the condition
+ * @param $condition - the condition object @see world.json ("condition" object)
+ * @return boolean condition is respected or not
+ */
+function check_condition($condition){
+    switch ($condition['value']){
+        case 'key':
+            $objects_needed = $condition['objects'];
+            if(user_has_objects($objects_needed)){
+                return true;
+            }
+            break;
+        default:
+            //if some unsupported condition
+            return false;
+    }
+}
+
+/**
+ * check the set of conditions
+ * @see check_condition();
+ * @param $conditions - array of conditions
+ * @return bool - respected or not
+ */
+function check_conditions($conditions){
+    if($conditions==null) return true;
+
+    for ($i = 0;$i<count($conditions);$i++){
+        if(!check_condition($conditions[$i])){
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * check if user has the objects in inventory
+ * @param $objects_needed - array of staff items
+ * @return boolean user has the objects of not
+ */
+function user_has_objects($objects_needed){
+    $staff = get_current_usr()['inventory_staff_ids'];
+    for($i = 0;$i<count($objects_needed);$i++){
+        if(!in_array($objects_needed[$i],$staff)) return false;
+    }
+    return true;
+}
+
+/**
+ * get the conditions for the specified  room and specified out
+ * @param $room_id
+ * @param $out_number
+ * @return array of conditions
+ */
+function get_conditions_for_room_id_and_out($room_id,$out_number){
+    $room = get_room_by_id($room_id);
+    if(array_key_exists('conditions',$room['outs'][$out_number])){
+        return $room['outs'][$out_number]['conditions'];
+    } else return null;
+}
+
+/**
+ * check the special events in selected room
+ * if exist, execute them
+ * @param $room_id - id of the room
+ * @return - array i.e. {"name":"event name","message":"event message"}
+ */
+function execute_special_events($room_id){
+    $room = get_room_by_id($room_id);
+    $events = array();
+    if(array_key_exists('special_events',$room)){
+        for ($i=0;$i<count($room['special_events']);$i++){
+            array_push($events,execute_event($room['special_events'][$i]));
+        }
+    }
+    return $events;
+}
+
+/**
+ *  execute the event
+ * @param $event - object @see world.json ("special_events")
+ * @return array i.e. {"name":"event name","message":"event message"}
+ */
+function execute_event($event){
+    if(!empty($event['effect'])){
+        //not supported yet
+    }
+    return array("name"=>$event['value'],"message"=>$event['message']);
+}
+
+/**
+ * get the current coordinates of the user
+ * @return string in json format i.e {"x":"position x","y":"position y"}
+ */
+function get_user_coordinates(){
+    $coords = get_room_by_id(get_current_usr()['room_id'])['display_params']['points'];
+    $x = $coords[0][0]+ ($coords[2][0] - $coords[0][0])/2;
+    $y = $coords[0][1]+ ($coords[2][1] - $coords[0][1])/2;
+    return json_encode(array("x"=>$x,"y"=>$y));
 }

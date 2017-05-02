@@ -3,6 +3,7 @@
   "room_id":0,
   "inventory_staff_ids":[],
   "stats":{
+    "default_health":50,
     "health":50,
     "attack":10,
     "defence":5
