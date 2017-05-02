@@ -1,0 +1,38 @@
+[
+  {
+    "id":0,
+    "name":"petit bête",
+    "stats":{
+      "health":10,
+      "attack":1,
+      "defence":1
+    }
+  },
+  {
+    "id":1,
+    "name":"moyen bête",
+    "stats":{
+      "health":20,
+      "attack":1,
+      "defence":5
+    }
+  },
+  {
+    "id":2,
+    "name":"grand bête",
+    "stats":{
+      "health":30,
+      "attack":4,
+      "defence":3
+    }
+  },
+  {
+    "id":3,
+    "name":"très grand bête",
+    "stats":{
+      "health":40,
+      "attack":5,
+      "defence":2
+    }
+  }
+]

@@ -64,7 +64,14 @@
     "outs":[
       {
         "name":"out to 5",
-        "id":4
+        "id":4,
+        "conditions":[
+          {
+            "value":"key",
+            "objects":[4],
+            "message":"clef est necessaire pour ouvrir ce porte"
+          }
+        ]
       },
       {
         "name":"out to 3",
@@ -87,6 +94,10 @@
       {
         "name":"out to 4",
         "id":3
+      },
+      {
+        "name":"out to 7",
+        "id":6
       }
     ],
     "display_params":{
@@ -97,6 +108,12 @@
   {
     "id":5,
     "name":"6",
+    "special_events":[
+      {
+        "value":"win",
+        "message":"some win message"
+      }
+    ],
     "outs":[
       {
         "name":"out to 5",
@@ -105,7 +122,23 @@
     ],
     "display_params":{
       "color":"red",
-      "points":[[0,100],[150,100],[150,300],[0,300]]
+      "points":[[0,100],[150,100],[150,200],[0,200]]
+    }
+  },
+  {
+    "id":6,
+    "name":"7",
+    "special_events":[
+      {
+        "value":"lose",
+        "message":"some lose message"
+      }
+    ],
+    "outs":[
+    ],
+    "display_params":{
+      "color":"black",
+      "points":[[0,200],[150,200],[150,300],[0,300]]
     }
   }
 ]

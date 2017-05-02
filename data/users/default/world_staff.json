@@ -1,14 +1,37 @@
 [
   {
     "room_id":0,
-    "staff":[1]
+    "staff":[1],
+    "mobs":[]
   },
   {
     "room_id":1,
-    "staff":[2]
+    "staff":[2],
+    "mobs":[]
   },
   {
     "room_id":2,
-    "staff":[0]
+    "staff":[0],
+    "mobs":[0]
+  },
+  {
+    "room_id":3,
+    "staff":[],
+    "mobs":[1]
+  },
+  {
+    "room_id":4,
+    "staff":[],
+    "mobs":[2]
+  },
+  {
+    "room_id":5,
+    "staff":[],
+    "mobs":[3]
+  },
+  {
+    "room_id":6,
+    "staff":[],
+    "mobs":[]
   }
 ]
