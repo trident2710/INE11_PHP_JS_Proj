@@ -13,15 +13,16 @@ var user_request = new XMLHttpRequest();
 user_request.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
         display_user_position(JSON.parse(user_request.responseText));
-        alert(user_request.responseText);
     }
 };
 user_request.open("GET", "../game.php?command=where",true);
 user_request.send();
 
 
-
-
+/**
+ * fill the map using the coordinates of the rooms
+ * @param map_data -json data @see world.json("display_params")
+ */
 var fill_map = function (map_data) {
     var map = document.getElementById('map');
     var ctx = map.getContext("2d");
@@ -34,6 +35,10 @@ var fill_map = function (map_data) {
     }
 };
 
+/**
+ * display the user current position on the map
+ * @param user_data - json object @see game_utils.php get_user_coordinates
+ */
 var display_user_position = function(user_data){
     var map = document.getElementById('map');
     var context = map.getContext("2d");
@@ -44,4 +49,21 @@ var display_user_position = function(user_data){
     context.lineWidth = 5;
     context.strokeStyle = '#003300';
     context.stroke();
+};
+
+/**
+ * send the request to notify the backend that the game was ended
+ * @param status - boolean indicates whether it is the win or lose
+ */
+var send_game_end_request = function(status){
+    var end_request = new XMLHttpRequest();
+    end_request.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if(this.status == 200){
+                alert("Vous avez fini votre jeu."+(status?"C'est la victoire":"C'est la defaite, désolé"));
+            }
+        }
+    };
+    end_request.open("GET", "../game.php?command=end&status="+(status?"win":"lose"),true);
+    end_request.send();
 };

@@ -73,6 +73,23 @@ if(!check_user_in_session()){
 
                                 ?>
                             </div>
+                            <table class="main">
+                                <tr>
+                                    <th>Bêtes dans ce chambre</th>
+                                </tr>
+                            </table>
+                            <div>
+                                <?php
+                                    $mobs = getMobsByRoomId(get_current_usr()['room_id']);
+                                    for($i=0;$i<count($mobs);$i++){
+                                        echo "<div class='link'>".
+                                            "<h4 class='link_title'>".get_staff_by_id($room_staff[$i])['name']."  ".
+                                            "<a class = 'link_ref' href=\"/INE11_PHP_JS_Proj/game.php?command=take&item=".$room_staff[$i]."\" >"."Prendre"."</a>".
+                                            "</h4>".
+                                            "</div>";
+                                    }
+                                ?>
+                            </div>
                         </div>
                     </td>
                     <td >
@@ -104,6 +121,15 @@ if(!check_user_in_session()){
                                     if(!empty($events)){
                                         for ($i=0;$i<count($events);$i++){
                                             echo $events[$i]['message'];
+                                            $status = is_end_event($events[$i]);
+                                            echo $status;
+                                            $val = '';
+                                            if($status==1)
+                                                echo "<script> send_game_end_request(true);</script>";
+                                            else
+                                                if($status==0)
+                                                    echo "<script> send_game_end_request(false);</script>";
+
                                         }
                                     }
                                 ?>

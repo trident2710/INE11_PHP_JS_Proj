@@ -112,10 +112,10 @@ function unset_from_session($label){
 }
 
 /**
- * load the world staff data to session
+ * read the world staff from file
  */
-function load_user_world_staff_to_session(){
-    $_SESSION['world_staff'] = json_decode(file_get_contents("data/users/".get_current_usr()['name']."/world_staff.json"),true);
+function get_world_staff(){
+    return json_decode(file_get_contents("data/world_staff.json"),true);
 }
 
 /**
@@ -142,6 +142,23 @@ function backup_user_world_staff(){
 function load_data_to_session(){
     $_SESSION['world'] = json_decode(file_get_contents("data/world.json"),true);
     $_SESSION['staff'] = json_decode(file_get_contents("data/staff.json"),true);
+    $_SESSION['mobs'] = json_decode(file_get_contents("data/mobs.json"),true);
+}
+
+/**
+ * load the user data to session
+ * @param $user_data
+ */
+function load_user_data_to_session($user_data){
+    $_SESSION['user_data'] = $user_data;
+}
+
+/**
+ * load the user data to session
+ * @param $world_staff
+ */
+function load_user_world_staff_to_session($world_staff){
+    $_SESSION['world_staff'] = $world_staff;
 }
 
 /**
@@ -319,6 +336,15 @@ function execute_event($event){
 }
 
 /**
+ * check if event is the event of the end of the game
+ * @param $event - @see world.json ("special_events")
+ * @return boolean is the event the end of the game or not
+ */
+function is_end_event($event){
+    return $event['name'] == 'win'? 1: ($event['name'] == 'lose')?0:-1;
+}
+
+/**
  * get the current coordinates of the user
  * @return string in json format i.e {"x":"position x","y":"position y"}
  */
@@ -327,4 +353,100 @@ function get_user_coordinates(){
     $x = $coords[0][0]+ ($coords[2][0] - $coords[0][0])/2;
     $y = $coords[0][1]+ ($coords[2][1] - $coords[0][1])/2;
     return json_encode(array("x"=>$x,"y"=>$y));
+}
+
+/**
+ * get the list of mobs in the selected room
+ * @param $roomId - id of the room
+ */
+function getMobsByRoomId($roomId){
+    return get_world_staff_by_room_id($roomId)['mobs'];
+}
+
+/**
+ * get the mob information from
+ * @param $mob_id
+ * @return object mob information @see mobs.json
+ */
+function get_mob_by_id($mob_id){
+
+}
+
+/**
+ * remove the item from the room of the world
+ * @param $room_id
+ * @param $mob_id
+ */
+function remove_mob_from_world_staff($room_id,$mob_id){
+    for($i=0;$i<count($_SESSION['world_staff']);$i++){
+        if($_SESSION['world_staff'][$i]['room_id']==$room_id){
+            $_SESSION['world_staff'][$i]['mobs'] = array_diff($_SESSION['world_staff'][$i]['mobs'],array($mob_id));
+            if (false !== $key = array_search($mob_id, $_SESSION['world_staff'][$i]['mobs'])) {
+                unset($_SESSION['world_staff'][$i]['mobs'][$key]);
+            }
+        }
+    }
+}
+
+/**
+ * drop item from user inventory to the current room
+ * @param $item_id
+ */
+function drop_item($item_id){
+    $usr = get_current_usr();
+    //$usr['inventory_staff_ids'] = array_diff($usr['inventory_staff_ids'],array($item_id));
+    if (false !== $key = array_search($item_id, $usr['inventory_staff_ids'])) {
+        unset($usr['inventory_staff_ids'][$key]);
+    }
+    add_item_to_world_staff($usr['room_id'],$item_id);
+    load_user_data_to_session($usr);
+    backup_user_world_staff();
+    backup_user_data();
+}
+
+/**
+ * pick item from the current room and put to the inventory
+ * @param $item_id
+ */
+function pick_item($item_id){
+    $usr = get_current_usr();
+    array_push($usr['inventory_staff_ids'],$item_id);
+    load_user_data_to_session($usr);
+    remove_item_from_world_staff($usr['room_id'],$item_id);
+    backup_user_world_staff();
+    backup_user_data();
+}
+
+/**
+ * unset the data from session
+ */
+function unset_session_variables(){
+    unset_from_session('user_data');
+    unset_from_session('world_staff');
+    unset_from_session('world');
+    unset_from_session('staff');
+    unset_from_session('mobs');
+
+}
+
+/**
+ * put user to the selected room
+ * @param $room_id
+ */
+function put_user_to_room($room_id){
+    $usr = get_current_usr();
+    $usr['room_id']=$room_id;
+    load_user_data_to_session($usr);
+    backup_user_data();
+}
+
+/**
+ * set user settings to default
+ */
+function set_user_settings_to_default(){
+    $user_data = add_new_user(get_current_usr()['name']);
+
+    load_data_to_session();
+    load_user_data_to_session($user_data);
+    load_user_world_staff_to_session(get_world_staff());
 }
