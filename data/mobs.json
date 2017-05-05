@@ -4,7 +4,7 @@
     "name":"petit bête",
     "stats":{
       "health":10,
-      "attack":1,
+      "attack":7,
       "defence":1
     }
   },
@@ -13,7 +13,7 @@
     "name":"moyen bête",
     "stats":{
       "health":20,
-      "attack":1,
+      "attack":8,
       "defence":5
     }
   },
@@ -22,7 +22,7 @@
     "name":"grand bête",
     "stats":{
       "health":30,
-      "attack":4,
+      "attack":9,
       "defence":3
     }
   },
@@ -30,8 +30,8 @@
     "id":3,
     "name":"très grand bête",
     "stats":{
-      "health":40,
-      "attack":5,
+      "health":60,
+      "attack":10,
       "defence":2
     }
   }

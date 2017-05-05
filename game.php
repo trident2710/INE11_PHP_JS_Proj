@@ -75,6 +75,14 @@ function process_where_request(){
 }
 
 /**
+ * process the fight request
+ * @param $mob_id
+ */
+function process_fight_request($mob_id){
+    simulate_fight($mob_id);
+}
+
+/**
  * process the end of the game request
  * @param $status_param - the request param indicates with which status the
  * game has ended
@@ -119,6 +127,9 @@ function handle_request(){
                 break;
             case 'take':
                 process_add_item_to_inventory($_GET['item']);
+                break;
+            case 'fight':
+                process_fight_request($_GET['mob']);
                 break;
             case 'map':
                 process_map_request();

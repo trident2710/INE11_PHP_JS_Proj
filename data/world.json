@@ -116,10 +116,6 @@
       }
     ],
     "outs":[
-      {
-        "name":"out to 5",
-        "id":4
-      }
     ],
     "display_params":{
       "color":"red",

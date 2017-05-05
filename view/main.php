@@ -6,7 +6,7 @@ if(!check_user_in_session()){
     exit();
 }
 ?>
-<html lang="en">
+<html lang="en" xmlns:background-size="http://www.w3.org/1999/xhtml" xmlns:background="http://www.w3.org/1999/xhtml">
     <head>
         <meta charset="UTF-8">
         <title>Main page</title>
@@ -63,6 +63,7 @@ if(!check_user_in_session()){
                                 <?php
                                     $usr = get_current_usr();
                                     $room_staff = get_world_staff_by_room_id($usr['room_id'])['staff'];
+                                    echo empty($_SESSION['world_staff']);
                                     for ($i=0;$i<count($room_staff);$i++){
                                         echo "<div class='link'>".
                                             "<h4 class='link_title'>".get_staff_by_id($room_staff[$i])['name']."  ".
@@ -80,11 +81,11 @@ if(!check_user_in_session()){
                             </table>
                             <div>
                                 <?php
-                                    $mobs = getMobsByRoomId(get_current_usr()['room_id']);
+                                    $mobs = get_mobs_by_room_id(get_current_usr()['room_id']);
                                     for($i=0;$i<count($mobs);$i++){
                                         echo "<div class='link'>".
-                                            "<h4 class='link_title'>".get_staff_by_id($room_staff[$i])['name']."  ".
-                                            "<a class = 'link_ref' href=\"/INE11_PHP_JS_Proj/game.php?command=take&item=".$room_staff[$i]."\" >"."Prendre"."</a>".
+                                            "<h4 class='link_title'>".get_mob_by_id($mobs[$i])['name']."  ".
+                                            "<a class = 'link_ref' href=\"/INE11_PHP_JS_Proj/game.php?command=fight&mob=".$mobs[$i]."\" >"."Battre"."</a>".
                                             "</h4>".
                                             "</div>";
                                     }
@@ -129,9 +130,22 @@ if(!check_user_in_session()){
                                             else
                                                 if($status==0)
                                                     echo "<script> send_game_end_request(false);</script>";
-
                                         }
                                     }
+                                ?>
+                            </div>
+                            <table class="main">
+                                <tr>
+                                    <th>Vos Stats:</th>
+                                </tr>
+                            </table>
+                            <div>
+                                <?php
+                                    $stats = get_current_usr()['stats'];
+                                    $bonuses = calculate_inventory_bonuses();
+                                    echo "<p> Santé: ".$stats['health']."/".$stats['default_health'].($bonuses['health']>0?"+".$bonuses['health']:" ")."</p>";
+                                    echo "<p> Attaque: ".$stats['attack'].($bonuses['attack']>0?"+".$bonuses['attack']:" ")."</p>";
+                                    echo "<p> Défence: ".$stats['defence'].($bonuses['defence']>0?"+".$bonuses['defence']:" ")."</p>";
                                 ?>
                             </div>
                         </div>

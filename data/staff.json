@@ -1,22 +1,97 @@
 [
   {
     "id":0,
-    "name":"spear"
+    "name":"spear",
+    "usage":"static",
+    "effects":[
+      {
+        "property":"attack",
+        "value":1
+      }
+    ]
   },
   {
     "id":1,
-    "name":"sword"
+    "name":"sword",
+    "usage":"static",
+    "effects":[
+      {
+        "property":"attack",
+        "value":2
+      }
+    ]
   },
   {
     "id":2,
-    "name":"shield"
+    "name":"shield",
+    "usage":"static",
+    "effects":[
+      {
+        "property":"defence",
+        "value":1
+      }
+    ]
   },
   {
     "id":3,
-    "name":"hammer"
+    "name":"hammer",
+    "usage":"static",
+    "effects":[
+      {
+        "property":"attack",
+        "value":1
+      }
+    ]
   },
   {
     "id":4,
-    "name":"clef pour chambre 5"
+    "name":"clef pour chambre 5",
+    "usage":"static",
+    "effects":[
+    ]
+  },
+  {
+    "id":5,
+    "name":"helmet",
+    "usage":"static",
+    "effects":[
+      {
+        "property":"defence",
+        "value":2
+      }
+    ]
+  },
+  {
+    "id":6,
+    "name":"healing potion",
+    "usage":"single",
+    "effects":[
+      {
+        "property":"health",
+        "value":15
+      }
+    ]
+  },
+  {
+    "id":6,
+    "name":"defence potion",
+    "usage":"single",
+    "effects":[
+      {
+        "property":"defence",
+        "value":1
+      }
+    ]
+  },
+  {
+    "id":6,
+    "name":"amulet of health",
+    "usage":"static",
+    "effects":[
+      {
+        "property":"health",
+        "value":5
+      }
+    ]
   }
 ]

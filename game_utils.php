@@ -115,7 +115,8 @@ function unset_from_session($label){
  * read the world staff from file
  */
 function get_world_staff(){
-    return json_decode(file_get_contents("data/world_staff.json"),true);
+    $user_data = get_current_usr();
+    return json_decode(file_get_contents("data/users/".$user_data['name']."/world_staff.json"),true);
 }
 
 /**
@@ -359,7 +360,7 @@ function get_user_coordinates(){
  * get the list of mobs in the selected room
  * @param $roomId - id of the room
  */
-function getMobsByRoomId($roomId){
+function get_mobs_by_room_id($roomId){
     return get_world_staff_by_room_id($roomId)['mobs'];
 }
 
@@ -369,7 +370,11 @@ function getMobsByRoomId($roomId){
  * @return object mob information @see mobs.json
  */
 function get_mob_by_id($mob_id){
-
+    for($i=0;$i<count($_SESSION['mobs']);$i++){
+        if($_SESSION['mobs'][$i]['id']==$mob_id){
+            return $_SESSION['mobs'][$i];
+        }
+    }
 }
 
 /**
@@ -426,7 +431,6 @@ function unset_session_variables(){
     unset_from_session('world');
     unset_from_session('staff');
     unset_from_session('mobs');
-
 }
 
 /**
@@ -449,4 +453,65 @@ function set_user_settings_to_default(){
     load_data_to_session();
     load_user_data_to_session($user_data);
     load_user_world_staff_to_session(get_world_staff());
+}
+
+/**
+ * simulate the fight between user and the mob
+ * @param $mob_id
+ */
+function simulate_fight($mob_id){
+    $user = get_current_usr();
+    $mob = get_mob_by_id($mob_id);
+    while ($user['stats']['health']>0&&$mob['stats']['health']>0){
+        $m_dmg = $mob['stats']['attack'] - $user['stats']['defence'];
+        if($m_dmg>0) $user['stats']['health']-= $m_dmg;
+
+        $u_dmg = $user['stats']['attack'] - $mob['stats']['defence'];
+        if($u_dmg>0) $mob['stats']['health']-= $u_dmg;
+    }
+    if($mob['stats']['health']<=0){
+        remove_mob_from_world_staff($user['room_id'],$mob_id);
+    }
+    $_SESSION['user_data'] = $user;
+    backup_user_data();
+}
+
+/**
+ * get the inventory items of the user
+ * $return array of staff items @see staff.json
+ */
+function get_user_inventory(){
+    $inventory = array();
+    $inv_ids = get_current_usr()['inventory_staff_ids'];
+    for($i = 0;$i<count($inv_ids);$i++){
+        array_push($inventory,get_staff_by_id($inv_ids[$i]));
+    }
+    return $inventory;
+}
+
+/**
+ * calculate the bonuses from the inventory items of the user
+ * $return array contains ("attack"->value,"defence"->value,"health"->value)
+ */
+function calculate_inventory_bonuses(){
+    $bonuses = array("health"=>0,"defence"=>0,"attack"=>0);
+    $inventory = get_user_inventory();
+    for($i = 0;$i<count($inventory);$i++){
+        if($inventory[$i]['usage']=='static')
+        for($j = 0;$j< count($inventory[$i]['effects']);$j++){
+            $effect = $inventory[$i]['effects'][$j];
+            switch ($effect['property']){
+                case 'attack':
+                    $bonuses['attack']+=$effect['value'];
+                    break;
+                case 'defence':
+                    $bonuses['defence']+=$effect['value'];
+                    break;
+                case 'health':
+                    $bonuses['health']+=$effect['value'];
+                    break;
+            }
+        }
+    }
+    return $bonuses;
 }
