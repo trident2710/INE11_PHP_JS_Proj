@@ -1,7 +1,7 @@
 [
   {
     "id":0,
-    "name":"spear",
+    "name":"lance",
     "usage":"static",
     "effects":[
       {
@@ -12,7 +12,7 @@
   },
   {
     "id":1,
-    "name":"sword",
+    "name":"glaive",
     "usage":"static",
     "effects":[
       {
@@ -23,22 +23,11 @@
   },
   {
     "id":2,
-    "name":"shield",
+    "name":"bouclier",
     "usage":"static",
     "effects":[
       {
         "property":"defence",
-        "value":1
-      }
-    ]
-  },
-  {
-    "id":3,
-    "name":"hammer",
-    "usage":"static",
-    "effects":[
-      {
-        "property":"attack",
         "value":1
       }
     ]
@@ -52,7 +41,7 @@
   },
   {
     "id":5,
-    "name":"helmet",
+    "name":"casque",
     "usage":"static",
     "effects":[
       {
@@ -63,7 +52,7 @@
   },
   {
     "id":6,
-    "name":"healing potion",
+    "name":"poison de santé",
     "usage":"single",
     "effects":[
       {
@@ -73,19 +62,8 @@
     ]
   },
   {
-    "id":6,
-    "name":"defence potion",
-    "usage":"single",
-    "effects":[
-      {
-        "property":"defence",
-        "value":1
-      }
-    ]
-  },
-  {
-    "id":6,
-    "name":"amulet of health",
+    "id":7,
+    "name":"amulette de santé",
     "usage":"static",
     "effects":[
       {

@@ -5,6 +5,12 @@ if(!check_user_in_session()){
     header("Location:../game.php");
     exit();
 }
+
+if(!check_user_alive()){
+    header("Location:../game.php?command=end&status=dead");
+    exit();
+}
+
 ?>
 <html lang="en" xmlns:background-size="http://www.w3.org/1999/xhtml" xmlns:background="http://www.w3.org/1999/xhtml">
     <head>
@@ -17,7 +23,7 @@ if(!check_user_in_session()){
         <div class="container">
             <header>
                 <h1>Bienvenue, <?php echo get_current_usr()['name'];?></h1>
-                <form action="/INE11_PHP_JS_Proj/game.php" method="get">
+                <form action="../game.php" method="get">
                     <input type="hidden" name="command" value="logout" />
                     <input type="submit" value="Logout" style="font-size: 12px"/>
                 </form>
@@ -50,7 +56,7 @@ if(!check_user_in_session()){
                                     if($conditions!=null&&!check_conditions($conditions)){
                                         echo "<p>".$room_name." par ".$name." (fermé)"."</p>";
                                     } else{
-                                        echo "<p><a href=\"/INE11_PHP_JS_Proj/game.php?command=go&room=".$id."\">".$room_name." par ".$name."</a></p>";
+                                        echo "<p><a href=\"../game.php?command=go&room=".$id."\">".$room_name." par ".$name."</a></p>";
                                     }
                                 }
                             ?>
@@ -67,7 +73,7 @@ if(!check_user_in_session()){
                                     for ($i=0;$i<count($room_staff);$i++){
                                         echo "<div class='link'>".
                                             "<h4 class='link_title'>".get_staff_by_id($room_staff[$i])['name']."  ".
-                                            "<a class = 'link_ref' href=\"/INE11_PHP_JS_Proj/game.php?command=take&item=".$room_staff[$i]."\" >"."Prendre"."</a>".
+                                            "<a class = 'link_ref' href=\"../game.php?command=take&item=".$room_staff[$i]."\" >"."Prendre"."</a>".
                                             "</h4>".
                                             "</div>";
                                     }
@@ -85,7 +91,7 @@ if(!check_user_in_session()){
                                     for($i=0;$i<count($mobs);$i++){
                                         echo "<div class='link'>".
                                             "<h4 class='link_title'>".get_mob_by_id($mobs[$i])['name']."  ".
-                                            "<a class = 'link_ref' href=\"/INE11_PHP_JS_Proj/game.php?command=fight&mob=".$mobs[$i]."\" >"."Battre"."</a>".
+                                            "<a class = 'link_ref' href=\"../game.php?command=fight&mob=".$mobs[$i]."\" >"."Battre"."</a>".
                                             "</h4>".
                                             "</div>";
                                     }
@@ -102,11 +108,13 @@ if(!check_user_in_session()){
                                     echo "<p>Votre inventaire:</p>";
                                     for ($i=0;$i<count(get_current_usr()['inventory_staff_ids']);$i++){
                                         $staff_id = get_current_usr()['inventory_staff_ids'][$i];
-                                        echo "<div class='link'>".
+                                        $s = "<div class='link'>".
                                             "<h4 class='link_title'>".get_staff_by_id($staff_id)['name']."  ".
-                                            "<a class = 'link_ref' href=\"/INE11_PHP_JS_Proj/game.php?command=remove&item=".$staff_id."\" >"."  Supprimer"."</a>".
-                                            "</h4>".
-                                            "</div>";
+                                            "<a class = 'link_ref' href=\"../game.php?command=remove&item=".$staff_id."\" >"."  Jeter"."</a>";
+                                        if(is_single_use_item($staff_id))
+                                            $s.="<a class = 'link_ref' href=\"../game.php?command=use&item=".$staff_id."\" >"."  Utiliser"."</a>";
+                                        $s.="</h4>"."</div>";
+                                        echo $s;
                                     }
                                 }
                             ?>
@@ -123,13 +131,14 @@ if(!check_user_in_session()){
                                         for ($i=0;$i<count($events);$i++){
                                             echo $events[$i]['message'];
                                             $status = is_end_event($events[$i]);
-                                            echo $status;
-                                            $val = '';
-                                            if($status==1)
-                                                echo "<script> send_game_end_request(true);</script>";
-                                            else
-                                                if($status==0)
-                                                    echo "<script> send_game_end_request(false);</script>";
+                                            if($status==1){
+                                                header("Location:../game.php?command=end&status=win");
+                                                exit();
+                                            }
+                                            if($status==0){
+                                                header("Location:../game.php?command=end&status=lose");
+                                                exit();
+                                            }
                                         }
                                     }
                                 ?>
@@ -144,7 +153,7 @@ if(!check_user_in_session()){
                                     $stats = get_current_usr()['stats'];
                                     $bonuses = calculate_inventory_bonuses();
                                     echo "<p> Santé: ".$stats['health']."/".$stats['default_health'].($bonuses['health']>0?"+".$bonuses['health']:" ")."</p>";
-                                    echo "<p> Attaque: ".$stats['attack'].($bonuses['attack']>0?"+".$bonuses['attack']:" ")."</p>";
+                                    echo "<p> Ataque: ".$stats['attack'].($bonuses['attack']>0?"+".$bonuses['attack']:" ")."</p>";
                                     echo "<p> Défence: ".$stats['defence'].($bonuses['defence']>0?"+".$bonuses['defence']:" ")."</p>";
                                 ?>
                             </div>

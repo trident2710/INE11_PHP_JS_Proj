@@ -1,7 +1,7 @@
 [
   {
     "id":0,
-    "name":"1",
+    "name":"chambre initiale",
     "outs":[
       {
         "name":"porte",
@@ -19,14 +19,14 @@
   },
   {
     "id":1,
-    "name":"2",
+    "name":"grand hall",
     "outs":[
       {
-        "name":"porte",
+        "name":"porte jeune",
         "id":0
       },
       {
-        "name":"fenetre",
+        "name":"porte bleu",
         "id":2
       }
     ],
@@ -37,10 +37,10 @@
   },
   {
     "id":2,
-    "name":"3",
+    "name":"chambre bleu",
     "outs":[
       {
-        "name":"fenetre Jaune",
+        "name":"fenetre jeune",
         "id":0
       },
       {
@@ -48,7 +48,7 @@
         "id":1
       },
       {
-        "name":"out to 4",
+        "name":"petit porte",
         "id":3
       }
 
@@ -60,10 +60,10 @@
   },
   {
     "id":3,
-    "name":"4",
+    "name":"petite chambre",
     "outs":[
       {
-        "name":"out to 5",
+        "name":"porte grand",
         "id":4,
         "conditions":[
           {
@@ -74,7 +74,7 @@
         ]
       },
       {
-        "name":"out to 3",
+        "name":"fenêtre bleu",
         "id":2
       }
     ],
@@ -85,19 +85,15 @@
   },
   {
     "id":4,
-    "name":"5",
+    "name":"chambre grand",
     "outs":[
       {
-        "name":"out to 6",
+        "name":"porte cassé",
         "id":5
       },
       {
-        "name":"out to 4",
+        "name":"fenêtre",
         "id":3
-      },
-      {
-        "name":"out to 7",
-        "id":6
       }
     ],
     "display_params":{
@@ -107,7 +103,27 @@
   },
   {
     "id":5,
-    "name":"6",
+    "name":"chambre de bête",
+    "special_events":[
+    ],
+    "outs":[
+      {
+        "name":"porte jolie",
+        "id":6
+      },
+      {
+        "name":"porte cassé",
+        "id":7
+      }
+    ],
+    "display_params":{
+      "color":"cyan",
+      "points":[[75,100],[150,100],[150,200],[75,200]]
+    }
+  },
+  {
+    "id":6,
+    "name":"7",
     "special_events":[
       {
         "value":"win",
@@ -119,12 +135,12 @@
     ],
     "display_params":{
       "color":"red",
-      "points":[[0,100],[150,100],[150,200],[0,200]]
+      "points":[[0,100],[75,100],[75,200],[0,200]]
     }
   },
   {
-    "id":6,
-    "name":"7",
+    "id":7,
+    "name":"8",
     "special_events":[
       {
         "value":"lose",

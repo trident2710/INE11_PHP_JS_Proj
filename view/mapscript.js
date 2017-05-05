@@ -50,20 +50,3 @@ var display_user_position = function(user_data){
     context.strokeStyle = '#003300';
     context.stroke();
 };
-
-/**
- * send the request to notify the backend that the game was ended
- * @param status - boolean indicates whether it is the win or lose
- */
-var send_game_end_request = function(status){
-    var end_request = new XMLHttpRequest();
-    end_request.onreadystatechange = function() {
-        if (this.readyState == 4) {
-            if(this.status == 200){
-                alert("Vous avez fini votre jeu."+(status?"C'est la victoire":"C'est la defaite, désolé"));
-            }
-        }
-    };
-    end_request.open("GET", "../game.php?command=end&status="+(status?"win":"lose"),true);
-    end_request.send();
-};

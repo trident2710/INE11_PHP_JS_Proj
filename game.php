@@ -11,6 +11,9 @@ function login($user_name){
     if(empty($user_name)) {
         return false;
     }
+    if($user_name=='default') {
+        return false;
+    }
     $user_data = get_user_data($user_name);
     if($user_data==null){
        $user_data = add_new_user($user_name);
@@ -83,31 +86,9 @@ function process_fight_request($mob_id){
 }
 
 /**
- * process the end of the game request
- * @param $status_param - the request param indicates with which status the
- * game has ended
- */
-function process_end_of_the_game($status_param){
-    header("Content-type: application/json");
-
-    if(empty($status_param)){
-        header("HTTP/1.1 400 Bad Request");
-        echo json_encode("{\"status\":\"error\"}");
-        return;
-    }
-    if($status_param=='win'||$status_param=='lose'){
-        set_user_settings_to_default();
-        header("HTTP/1.1 200 OK");
-        echo json_encode("{\"status\":\"success\"}");
-    } else{
-        header("HTTP/1.1 400 Bad Request");
-        echo json_encode("{\"status\":\"error\"}");
-    }
-
-}
-/**
  * handle and process the request params to control
- * the content of the page
+ * the content of the page, this method in fact handles
+ * all the requests of this project
  */
 function handle_request(){
     if(!empty($_GET["command"])){
@@ -131,6 +112,9 @@ function handle_request(){
             case 'fight':
                 process_fight_request($_GET['mob']);
                 break;
+            case 'use':
+                use_single_time_item($_GET['item']);
+                break;
             case 'map':
                 process_map_request();
                 return;
@@ -138,7 +122,9 @@ function handle_request(){
                 process_where_request();
                 return;
             case 'end':
-                process_end_of_the_game($_GET['status']);
+                set_user_settings_to_default();
+                logout();
+                header("Location:view/login.php?status=".($_GET['status']));
                 return;
             default:
                 echo file_get_contents("view/error.html");
@@ -146,9 +132,9 @@ function handle_request(){
     }
 
     if(!check_user_in_session()){
-        echo file_get_contents("view/login.html");
+        header("Location:view/login.php?status=login");
     } else {
         header("Location:view/main.php");
-        exit();
     }
+    exit();
 }

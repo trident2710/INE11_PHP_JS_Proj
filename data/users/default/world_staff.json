@@ -11,27 +11,32 @@
   },
   {
     "room_id":2,
-    "staff":[0,4],
+    "staff":[4],
     "mobs":[0]
   },
   {
     "room_id":3,
-    "staff":[],
+    "staff":[0],
     "mobs":[1]
   },
   {
     "room_id":4,
-    "staff":[],
+    "staff":[6],
     "mobs":[2]
   },
   {
     "room_id":5,
-    "staff":[],
+    "staff":[5],
     "mobs":[3]
   },
   {
     "room_id":6,
     "staff":[],
     "mobs":[]
+  },
+  {
+  "room_id":7,
+  "staff":[],
+  "mobs":[]
   }
 ]

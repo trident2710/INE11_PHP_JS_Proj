@@ -30,7 +30,7 @@
     "id":3,
     "name":"très grand bête",
     "stats":{
-      "health":60,
+      "health":100,
       "attack":10,
       "defence":2
     }

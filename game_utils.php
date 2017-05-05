@@ -66,7 +66,7 @@ function add_new_user($user_name){
     //$user_data = array("name"=>$user_name,"room_id"=>0,"inventory_staff_ids"=>[]);
     $user_data = json_decode(file_get_contents("data/users/default/user_data.json"),true);
     $user_data['name'] = $user_name;
-    mkdir("data/users/".$user_name);
+    if(!file_exists("data/users/".$user_name)) mkdir("data/users/".$user_name);
     file_put_contents("data/users/".$user_name."/user_data.json",json_encode($user_data));
     create_user_staff_data($user_name);
     return $user_data;
@@ -77,7 +77,7 @@ function add_new_user($user_name){
  * @param $user_name - user name
  */
 function create_user_staff_data($user_name){
-    mkdir("data/users/".$user_name);
+    if(!file_exists("data/users/".$user_name)) mkdir("data/users/".$user_name);
     file_put_contents("data/users/".$user_name."/world_staff.json",
         file_get_contents("data/users/default/world_staff.json"));
 }
@@ -342,7 +342,7 @@ function execute_event($event){
  * @return boolean is the event the end of the game or not
  */
 function is_end_event($event){
-    return $event['name'] == 'win'? 1: ($event['name'] == 'lose')?0:-1;
+    return $event['name'] == 'win'? 1: (($event['name'] == 'lose')?0:-1);
 }
 
 /**
@@ -461,19 +461,34 @@ function set_user_settings_to_default(){
  */
 function simulate_fight($mob_id){
     $user = get_current_usr();
+    $bonuses = calculate_inventory_bonuses();
+
+    $u_a = $user['stats']['attack']+$bonuses['attack'];
+    $u_h = $user['stats']['health']+$bonuses['health'];
+    $u_d = $user['stats']['defence']+$bonuses['defence'];
+
     $mob = get_mob_by_id($mob_id);
     while ($user['stats']['health']>0&&$mob['stats']['health']>0){
-        $m_dmg = $mob['stats']['attack'] - $user['stats']['defence'];
-        if($m_dmg>0) $user['stats']['health']-= $m_dmg;
+        $m_dmg = $mob['stats']['attack'] - $u_d;
+        if($m_dmg>0) $u_h-= $m_dmg;
 
-        $u_dmg = $user['stats']['attack'] - $mob['stats']['defence'];
+        $u_dmg = $u_a - $mob['stats']['defence'];
         if($u_dmg>0) $mob['stats']['health']-= $u_dmg;
     }
     if($mob['stats']['health']<=0){
         remove_mob_from_world_staff($user['room_id'],$mob_id);
     }
+    $user['stats']['health'] = $user['stats']['health']>=$u_h?$u_h:$user['stats']['health'];
     $_SESSION['user_data'] = $user;
     backup_user_data();
+}
+
+/**
+ * check if user is alive
+ * @return boolean true if alive
+ */
+function check_user_alive(){
+    return get_current_usr()['stats']['health']>0;
 }
 
 /**
@@ -514,4 +529,46 @@ function calculate_inventory_bonuses(){
         }
     }
     return $bonuses;
+}
+
+/**
+ *
+ * @param $item_id
+ * @return true if the item has the single time usage type
+ */
+function is_single_use_item($item_id){
+    return get_staff_by_id($item_id)['usage']=='single';
+}
+
+/**
+ * remove item from user inventory
+ * @param $item_id
+ */
+function remove_item_from_inventory($item_id){
+    $usr = get_current_usr();
+    $usr['inventory_staff_ids'] = array_diff($usr['inventory_staff_ids'],array($item_id));
+    $_SESSION['user_data'] = $usr;
+    backup_user_data();
+
+}
+/**
+ * use the singe time action item from your inventory
+ * @param $item_id - the inventary item id
+ */
+function use_single_time_item($item_id){
+    $inventory = get_user_inventory();
+    $user = get_current_usr();
+    for($i = 0;$i<count($inventory);$i++){
+        if($inventory[$i]['id']==$item_id){
+            $effects = $inventory[$i]['effects'];
+            for($j=0;$j<count($effects);$j++){
+                $user['stats']['health']=
+                    $user['stats']['health']+$effects[$j]['value']>$user['stats']['default_health']?
+                    $user['stats']['default_health']:
+                    $user['stats']['health']+$effects[$j]['value'];
+            }
+            $_SESSION['user_data'] = $user;
+            remove_item_from_inventory($item_id);
+        }
+    }
 }
