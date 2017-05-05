@@ -3,6 +3,9 @@ var map_request = new XMLHttpRequest();
 map_request.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
         fill_map(JSON.parse(map_request.responseText));
+
+        user_request.open("GET", "../game.php?command=where",true);
+        user_request.send();
     }
 };
 map_request.open("GET", "../game.php?command=map",true);
@@ -15,8 +18,7 @@ user_request.onreadystatechange = function() {
         display_user_position(JSON.parse(user_request.responseText));
     }
 };
-user_request.open("GET", "../game.php?command=where",true);
-user_request.send();
+
 
 
 /**
@@ -43,10 +45,16 @@ var display_user_position = function(user_data){
     var map = document.getElementById('map');
     var context = map.getContext("2d");
     context.beginPath();
-    context.arc(user_data['x'], user_data['y'], 10, 0, 2 * Math.PI, false);
-    context.fillStyle = 'white';
-    context.fill();
-    context.lineWidth = 5;
-    context.strokeStyle = '#003300';
-    context.stroke();
+    var img = new Image;
+    img.src = "hero.png";
+    img.onload = function(){
+        context.drawImage(img,user_data['x']-25, user_data['y']-25); // Or at whatever offset you like
+    };
+    //context.drawImage(document.getElementById("hero"),10,10);
+    // context.arc(user_data['x'], user_data['y'], 10, 0, 2 * Math.PI, false);
+    // context.fillStyle = 'white';
+    // context.fill();
+    // context.lineWidth = 5;
+    // context.strokeStyle = '#003300';
+    // context.stroke();
 };

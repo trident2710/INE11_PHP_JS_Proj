@@ -17,9 +17,12 @@ if(!check_user_alive()){
         <meta charset="UTF-8">
         <title>Main page</title>
         <link rel="stylesheet" type="text/css" href="style.css">
+
     </head>
     <body>
         <script src="mapscript.js"></script>
+        <audio src="sound.mp3" autoplay>
+        </audio>
         <div class="container">
             <header>
                 <h1>Bienvenue, <?php echo get_current_usr()['name'];?></h1>
